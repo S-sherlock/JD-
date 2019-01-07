@@ -44,27 +44,35 @@ class Jdcm(object):
         wc.to_file(f'{phone_id}.png')
         print(f"OK!path\t{os.getcwd()}\{phone_id}.png")
 
-    def out_chart(self):
-        self.cursor.execute("SELECT COUNT(productColor) FROM jdcomment1 WHERE productColor='金色'")
-        gold = self.cursor.fetchone()
-        self.cursor.execute("SELECT COUNT(productColor) FROM jdcomment1 WHERE productColor='银色'")
-        silver = self.cursor.fetchone()
-        self.cursor.execute("SELECT COUNT(productColor) FROM jdcomment1 WHERE productColor='深空灰色'")
-        gray = self.cursor.fetchone()
+    def out_chart(self, phone_id):
+        self.cursor.execute("SELECT COUNT(id) FROM phone_comment1 WHERE phone_id='%s'" % phone_id)
+        count_all = self.cursor.fetchone()[0]
+        self.cursor.execute("SELECT DISTINCT productColor FROM phone_comment1 WHERE phone_id='%s'" % phone_id)
+        color_list = self.cursor.fetchone()
+        print(count_all)
+        print(color_list)
+        list1 = []
+        for i in color_list:
+            print(i)
+            self.cursor.execute(
+                "SELECT COUNT(productColor) FROM phone_comment1 WHERE phone_id='%s' AND productColor='%s'" % (phone_id, i))
+            count_num = self.cursor.fetchone()[0]
+            list1.append((i, count_num))
         print('正在生成饼状图')
         pie_chart = pygal.Pie()
-        pie_chart.title = '苹果手机颜色分析 (in %)'
-        pie_chart.add('金色', gold[0]/500*100)
-        pie_chart.add('银色', silver[0]/500*100)
-        pie_chart.add('深空灰色', gray[0]/500*100)
-        pie_chart.render_to_file('test.svg')
-        print(f'OK!path\t{os.getcwd()}')
+        pie_chart.title = '手机颜色分析 (in %)'
+        for a in list1:
+            pie_chart.add(a[0], a[1]/count_all*100)
+        pie_chart.render_to_file(f'{phone_id}.svg')
+        print(f'OK!path\t{phone_id}.svg')
 
 
 if __name__ == '__main__':
     jd = Jdcm()
+    phone_id = 100002332138
+    jd.out_chart(phone_id)
     # jd.out_word_cloud()
-    jd.out_chart()
-    im = Image.open('test.png')
-    im.show()
+    # jd.out_chart()
+    # im = Image.open('test.png')
+    # im.show()
     jd.conn.close()  # 关闭数据库连接

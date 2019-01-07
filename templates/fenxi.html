@@ -5,6 +5,7 @@
   <title>Title</title>
 </head>
 <body>
-<img src="{{ url_for('static', filename='images/test.png') }}" width="1200" height="700">
+{#<img src="{{ url_for('static', filename='image/%s' % filename) }}" width="1200" height="700">#}
+<embed src="{{ url_for('static', filename='svg/%s' % filename) }}" style="height: 1000px;width:1000px;">
 </body>
 </html>
