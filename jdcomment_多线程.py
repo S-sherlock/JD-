@@ -61,36 +61,40 @@ user-agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, 
         conn.close()
 
     def run_and_save(self, id):
+        time1 = time.time()
         url_list = []
         num = 51
         for i in range(1, num):
             url = "https://sclub.jd.com/comment/productPageComments.action?productId="+str(id)+"&score=0&sortType=5&pageSize=10&page=" + str(
                 i)
             url_list.append(url)
-            time.sleep(1.2)  # 加个暂停防止被封
         pool = Pool(4)
         results = pool.map(self.get_json_thread, url_list)
+        x = 0
         for comment in results:
             self.save_data(comment)
+            x += 1
+        print(f'共写入{x*10}条记录,耗时：{time.time()-time1}秒')
 
 
 if __name__ == '__main__':
-    x = Jdcomment()
-    url_list = []
-    num = 21
-    for i in range(1, num):
-        url = "https://sclub.jd.com/comment/productPageComments.action?productId=100002332162&score=0&sortType=5&pageSize=10&page="+ str(i)
-        url_list.append(url)
-    pool = Pool(4)
-    time1 = time.time()
-    results = pool.map(x.get_json_thread, url_list)
-    for comment in results:
-        x.save_data(comment)
-    print(f'多线程耗时：{time.time()-time1}')
-    pool.close()
-    pool.join()
-    time2 = time.time()
-    for url in url_list:
-        results2 = x.get_json_thread(url)
-        x.save_data(results2)
-    print(f'单线程耗时：{time.time()-time2}')
+    pass
+    # x = Jdcomment()
+    # url_list = []
+    # num = 21
+    # for i in range(1, num):
+    #     url = "https://sclub.jd.com/comment/productPageComments.action?productId=100002332162&score=0&sortType=5&pageSize=10&page="+ str(i)
+    #     url_list.append(url)
+    # pool = Pool(4)
+    # time13 = time.time()
+    # results = pool.map(x.get_json_thread, url_list)
+    # for comment in results:
+    #     x.save_data(comment)
+    # print(f'多线程耗时：{time.time()-time13}')
+    # pool.close()
+    # pool.join()
+    # time2 = time.time()
+    # for url in url_list:
+    #     results2 = x.get_json_thread(url)
+    #     x.save_data(results2)
+    # print(f'单线程耗时：{time.time()-time2}')
