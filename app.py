@@ -17,18 +17,18 @@ def hello_world():
 
 @app.route('/comment')
 def comment():
-    from comment_spider import Jdcomment
+    from jdcomment_多线程 import Jdcomment
     args = request.args
     _id = args['id']
     print(id)
     cursor.execute("SELECT COUNT(productColor) FROM phone_comment1 WHERE phone_id='%s'" % _id)
     num = cursor.fetchone()
     print(num)
-    if num[0] > 200:
+    if num[0] > 100:
         return '爬取已数据完成%s' % _id
     else:
         spider = Jdcomment()
-        spider.save_data(50, _id)
+        spider.run_and_save(_id)
         return '爬取数据完成%s' % _id
 
 
@@ -43,7 +43,7 @@ def data_fenxi():
     q = os.path.exists(pa)
     # print(q)
     # print(os.getcwd())
-    if q == True:
+    if q:
         return render_template('fenxi.html')
     else:
         x = Jdcm()

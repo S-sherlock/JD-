@@ -22,10 +22,15 @@ class Jdcm(object):
     def cut_word(self, phone_id):
         x = self.get_comments(phone_id)
         list1 = []
+        stopword = ['用户', '未填写',  '评价', '内容', ]
         for i in x:
-            list1.append(i[0])
+                list1.append(i[0])
         a = ''.join(list1)
-        xx = jieba.cut(a, cut_all=False)
+        word_cut_list = jieba.cut(a, cut_all=False)
+        xx = []
+        for l in word_cut_list:
+            if l not in stopword and l.strip() != '':
+                xx.append(l)
         word1 = ' '.join(xx)
         return word1
 
@@ -70,8 +75,8 @@ class Jdcm(object):
 if __name__ == '__main__':
     jd = Jdcm()
     phone_id = 100002332138
-    jd.out_chart(phone_id)
-    # jd.out_word_cloud()
+    # jd.out_chart(phone_id)
+    jd.out_word_cloud(phone_id)
     # jd.out_chart()
     # im = Image.open('test.png')
     # im.show()

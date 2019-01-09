@@ -162,3 +162,4 @@ if __name__ == '__main__':
     jd = Jd_spider()
     PAGE_AMOUNT = 50
     jd.run_and_save(PAGE_AMOUNT)
+# 1546828773579_1351
